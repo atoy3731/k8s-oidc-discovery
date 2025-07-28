@@ -6,7 +6,7 @@ labels:
 helm:
   repo: https://ranchergovernment-sandbox.github.io/k8s-oidc-discovery/
   chart: "k8s-oidc-discovery"
-  version: 1.0.7
+  version: 1.0.8
   releaseName: k8s-oidc-discovery
 
 dependsOn:
