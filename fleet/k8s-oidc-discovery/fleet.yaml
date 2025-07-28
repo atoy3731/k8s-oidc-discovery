@@ -4,8 +4,7 @@ labels:
   app: k8s-oidc-discovery
 
 helm:
-  repo: https://ranchergovernment-sandbox.github.io/k8s-oidc-discovery/
-  chart: "k8s-oidc-discovery"
+  repo: oci://ghcr.io/atoy3731/charts/k9s-oidc-discovery
   version: 1.0.8
   releaseName: k8s-oidc-discovery
 
