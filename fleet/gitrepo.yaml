@@ -1,10 +1,10 @@
 kind: GitRepo
 apiVersion: fleet.cattle.io/v1alpha1
 metadata:
-  name: rke2-oidc-discovery
+  name: k8s-oidc-discovery
   namespace: fleet-default
 spec:
-  repo: https://github.com/atoy3731/rke2-oidc-discovery.git
+  repo: https://github.com/atoy3731/k8s-oidc-discovery.git
   branch: kube-lol
   targets:
   - name: oidc
@@ -16,6 +16,6 @@ spec:
   - "./fleet/cert-manager/cert-resources"
   - "./fleet/istio/operator"
   - "./fleet/istio/istio-resources"
-  - "./fleet/rke2-oidc-discovery"
+  - "./fleet/k8s-oidc-discovery"
   - "./fleet/eks-iam-webhook"
   - "./fleet/demo-app"

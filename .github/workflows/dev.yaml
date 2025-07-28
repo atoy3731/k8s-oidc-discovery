@@ -107,5 +107,5 @@ jobs:
       - name: Template Helm Chart
         id: template-helm-chart
         run: |
-          sed -i -e'' "s/%CHART_VERSION%/0.0.0/g" charts/rke2-oidc-discovery/Chart.yaml
-          helm template charts/rke2-oidc-discovery
+          sed -i -e'' "s/%CHART_VERSION%/0.0.0/g" charts/k8s-oidc-discovery/Chart.yaml
+          helm template charts/k8s-oidc-discovery

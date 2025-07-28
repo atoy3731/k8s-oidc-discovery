@@ -16,7 +16,7 @@ spec:
         prefix: /openid/v1/jwks
     route:
     - destination:
-        host: rke2-oidc-discovery.rke2-oidc-discovery.svc.cluster.local
+        host: k8s-oidc-discovery.k8s-oidc-discovery.svc.cluster.local
         port:
           number: 8080
   - route:

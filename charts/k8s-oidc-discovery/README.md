@@ -1,8 +1,8 @@
-# rke2-oidc-discovery
+# k8s-oidc-discovery
 
 ![Version: ](https://img.shields.io/badge/Version--informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
-RKE2 OIDC Discovery Tool
+K8s OIDC Discovery Tool
 
 ## Values
 
@@ -23,7 +23,7 @@ RKE2 OIDC Discovery Tool
 | config.tokenFile | string | `"/var/run/secrets/kubernetes.io/serviceaccount/token"` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"atoy3731/rke2-oidc-discovery"` |  |
+| image.repository | string | `"atoy3731/k8s-oidc-discovery"` |  |
 | image.tag | string | `"0.1.0"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |

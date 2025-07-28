@@ -9,7 +9,7 @@ kustomize:
 # dependsOn:
 #   - selector:
 #       matchLabels:
-#         app: rke2-oidc-discovery
+#         app: k8s-oidc-discovery
 
 diff:
   comparePatches:

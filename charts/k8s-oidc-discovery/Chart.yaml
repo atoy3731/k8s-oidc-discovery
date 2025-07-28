@@ -1,6 +1,6 @@
 apiVersion: v2
-name: rke2-oidc-discovery
-description: RKE2 OIDC Discovery Tool
+name: k8s-oidc-discovery
+description: K8s OIDC Discovery Tool
 
 type: application
 appVersion: "%CHART_VERSION%"

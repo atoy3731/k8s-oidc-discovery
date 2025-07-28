@@ -121,7 +121,7 @@ jobs:
       - name: Publish Helm chart
         id: publish-helm-chart
         run: |
-          cp -r charts/rke2-oidc-discovery /tmp/chart
+          cp -r charts/k8s-oidc-discovery /tmp/chart
           sed -i -e'' "s/%CHART_VERSION%/${{ env.TAG_NAME }}/g" /tmp/chart/Chart.yaml
           helm package -d /tmp/ /tmp/chart
           helm push /tmp/${{ env.REPO_NAME }}-${{ env.TAG_NAME }}.tgz oci://ghcr.io/atoy3731/charts

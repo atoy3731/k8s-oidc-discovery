@@ -15,7 +15,7 @@ THUMBPRINT=$(echo | openssl s_client -showcerts -servername $URL -connect $URL:4
 cat <<EOT > /tmp/example.tf
 thumbprint_list = ["$THUMBPRINT"]
 
-audience_list = ["rke2"]
+audience_list = ["k8s"]
 
 oidc_url = "oidc.kube.lol"
 

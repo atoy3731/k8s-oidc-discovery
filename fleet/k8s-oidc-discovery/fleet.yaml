@@ -1,0 +1,15 @@
+defaultNamespace: k8s-oidc-discovery
+
+labels:
+  app: k8s-oidc-discovery
+
+helm:
+  repo: https://ranchergovernment-sandbox.github.io/k8s-oidc-discovery/
+  chart: "k8s-oidc-discovery"
+  version: 1.0.7
+  releaseName: k8s-oidc-discovery
+
+dependsOn:
+  - selector:
+      matchLabels:
+        app: oidc-istio-resources
