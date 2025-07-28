@@ -3,5 +3,5 @@ name: rke2-oidc-discovery
 description: RKE2 OIDC Discovery Tool
 
 type: application
-appVersion: "1.0.1"
-version: 1.0.1
+appVersion: "1.0.0"
+version: 1.0.0
