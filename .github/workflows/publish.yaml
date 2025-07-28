@@ -2,14 +2,11 @@ name: Docker
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 env:
-  IMAGE_NAME: ghcr.io/ranchergovernment-sandbox/rke2-oidc-discovery
+  IMAGE_NAME: ghcr.io/atoy3731/rke2-oidc-discovery
 
 jobs:
   docker-push:
@@ -20,6 +17,17 @@ jobs:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@v3
 
+    - name: Get Tag Name
+      id: get_tag
+      run: echo "TAG_NAME=${GITHUB_REF##*/}" >> "$GITHUB_ENV"
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.TAG_NAME }}
+        name: Release ${{ env.TAG_NAME }}
+        generate_release_notes: true
+
     - name: 'Login to GitHub Container Registry'
       uses: docker/login-action@v1
       with:
@@ -29,8 +37,8 @@ jobs:
 
     - name: 'Build Inventory Image'
       run: |
-        docker build . --tag $IMAGE_NAME:0.2.0
-        docker push $IMAGE_NAME:0.2.0
+        docker build . --tag $IMAGE_NAME:${{ env.TAG_NAME }}
+        docker push $IMAGE_NAME:${{ env.TAG_NAME }}
 
   helm-publish:
     runs-on: ubuntu-latest

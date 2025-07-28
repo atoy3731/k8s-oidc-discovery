@@ -4,12 +4,13 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Config struct {
@@ -35,7 +36,7 @@ func init() {
 	if apiPortEnv := os.Getenv("API_PORT"); apiPortEnv != "" {
 		i, err := strconv.Atoi(apiPortEnv)
 		if err != nil {
-			log.Fatal(fmt.Sprintf("ERROR: Invalid 'API_PORT' variable (Value=%s)", apiPortEnv))
+			log.Fatalf("ERROR: Invalid 'API_PORT' variable (Value=%s)\n", apiPortEnv)
 		} else {
 			apiPort = i
 		}
@@ -63,7 +64,7 @@ func init() {
 	}
 
 	// Configure HTTP client with ca.crt
-	caCert, err := ioutil.ReadFile(apiCaCert)
+	caCert, err := os.ReadFile(apiCaCert)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,24 +74,26 @@ func init() {
 	client = http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
-				RootCAs: caCertPool,
+				RootCAs:    caCertPool,
+				MinVersion: tls.VersionTLS12,
 			},
 		},
 	}
 
-	log.Printf(fmt.Sprintf(`
-	----------------------------
-	OIDC Discovery Configuration
-	----------------------------
-	apiService: %s
-	apiCaCert: %s
-	tokenFile: %s
-	tlsEnabled: %t
-	`, config.apiService, apiCaCert, config.tokenFile, config.tlsEnabled))
+	log.Printf(
+		"\n----------------------------\n"+
+			"OIDC Discovery Configuration\n"+
+			"----------------------------\n"+
+			"apiService: %s\n"+
+			"apiCaCert: %s\n"+
+			"tokenFile: %s\n"+
+			"tlsEnabled: %t\n",
+		config.apiService, apiCaCert, config.tokenFile, config.tlsEnabled,
+	)
 }
 
 func getAuthToken() {
-	fileContent, err := ioutil.ReadFile(config.tokenFile)
+	fileContent, err := os.ReadFile(config.tokenFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -110,7 +113,7 @@ func getOidcConfiguration() string {
 		log.Fatal(err)
 	}
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 	return string(body)
 }
 
@@ -126,32 +129,48 @@ func getJwks() string {
 		log.Fatal(err)
 	}
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 	return string(body)
 }
 
 func oidcConfiguration(w http.ResponseWriter, r *http.Request) {
 	body := getOidcConfiguration()
-	fmt.Fprintf(w, body)
+	fmt.Fprint(w, body)
 }
 
 func jwks(w http.ResponseWriter, r *http.Request) {
 	body := getJwks()
-	fmt.Fprintf(w, body)
+	fmt.Fprint(w, body)
 }
 
 func handleRequests() {
 	http.HandleFunc("/.well-known/openid-configuration", oidcConfiguration)
 	http.HandleFunc("/openid/v1/jwks", jwks)
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte{})
+		if _, err := w.Write([]byte{}); err != nil {
+			log.Printf("error writing /ping response: %v", err)
+		}
 	})
 
 	log.Printf("Starting listener..")
 	if config.tlsEnabled {
-		log.Fatal(http.ListenAndServeTLS(":8443", "/certs/tls.crt", "/certs/tls.key", nil))
+		srv := &http.Server{
+			Addr:         ":8443",
+			Handler:      http.DefaultServeMux, // Replace with your actual handler or http.DefaultServeMux
+			ReadTimeout:  10 * time.Second,
+			WriteTimeout: 10 * time.Second,
+			IdleTimeout:  120 * time.Second,
+		}
+		log.Fatal(srv.ListenAndServeTLS("/certs/tls.crt", "/certs/tls.key"))
 	} else {
-		log.Fatal(http.ListenAndServe(":8080", nil))
+		srv := &http.Server{
+			Addr:         ":8080",
+			Handler:      http.DefaultServeMux, // Replace with your actual handler or http.DefaultServeMux
+			ReadTimeout:  10 * time.Second,
+			WriteTimeout: 10 * time.Second,
+			IdleTimeout:  120 * time.Second,
+		}
+		log.Fatal(srv.ListenAndServe())
 	}
 }
 
