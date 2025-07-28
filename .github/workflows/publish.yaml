@@ -33,7 +33,7 @@ jobs:
           ~/.cache/go-build
           ~/go/pkg/mod
           ~/go/bin
-        key: go-tools-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+        key: go-tools-${{ runner.os }}-${{ hashFiles('**/go.mod') }}
 
     - name: Install linters and tools
       run: |
