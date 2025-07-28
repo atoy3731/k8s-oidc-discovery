@@ -3,7 +3,7 @@ name: Docker
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}
@@ -42,9 +42,11 @@ jobs:
     - name: Run golangci-lint
       run: golangci-lint run
 
-    - name: Get Tag Name
-      id: get_tag
-      run: echo "TAG_NAME=${GITHUB_REF##*/}" >> "$GITHUB_ENV"
+    - name: Get Refs
+      id: get_refs
+      run: |
+        echo "TAG_NAME=${GITHUB_REF##*/}" >> "$GITHUB_ENV"
+        echo "REPO_NAME=`basename ${{ github.repository }}`" >> "$GITHUB_ENV"
 
     - name: 'Login to GitHub Container Registry'
       uses: docker/login-action@v3
@@ -58,12 +60,18 @@ jobs:
         docker build . --tag $IMAGE_NAME:${{ env.TAG_NAME }}
         docker push $IMAGE_NAME:${{ env.TAG_NAME }}
 
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.TAG_NAME }}
-        name: Release ${{ env.TAG_NAME }}
-        generate_release_notes: true
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Release ${{ github.ref }}
+        draft: false
+        prerelease: false
 
   helm-publish:
     runs-on: ubuntu-latest
@@ -81,10 +89,18 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Get Refs
+        id: get_refs
+        run: |
+          echo "TAG_NAME=${GITHUB_REF##*/}" >> "$GITHUB_ENV"
+          echo "REPO_NAME=`basename ${{ github.repository }}`" >> "$GITHUB_ENV"
+
       - name: Install Helm
         uses: azure/setup-helm@v3
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Publish Helm chart
+        id: publish-helm-chart
+        run: |
+          cp -r chart /tmp/chart
+          helm package -d /tmp/ /tmp/chart
+          helm push /tmp/${{ env.REPO_NAME }}-${{ env.TAG_NAME }}.tgz oci://ghcr.io/$GITHUB_REPOSITORY_OWNER/charts
