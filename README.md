@@ -10,7 +10,7 @@ I put this together to provide a "proxy" to the two necessary endpoints for OIDC
 
 ## Installation
 
-You can install this tool using [Helm](https://helm.sh/docs/intro/install/). Check out the [chart README](./chart/README.md) and [values.yaml](./chart/values.yaml) for further details.
+You can install this tool using [Helm](https://helm.sh/docs/intro/install/). Check out the [chart README](./charts/rke2-oidc-discovery/README.md) and [values.yaml](./charts/rke2-oidc-discovery/values.yaml) for further details.
 
 ### Ingress/Cert-Manager TLS Example (No Pod-Level TLS)
 
