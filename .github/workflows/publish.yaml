@@ -90,6 +90,8 @@ jobs:
       run: |
         docker build . --tag $IMAGE_NAME:${{ env.TAG_NAME }}
         docker push $IMAGE_NAME:${{ env.TAG_NAME }}
+        docker tag $IMAGE_NAME:${{ env.TAG_NAME }} $IMAGE_NAME:latest
+        docker push $IMAGE_NAME:latest
 
   helm-publish:
     runs-on: ubuntu-latest
