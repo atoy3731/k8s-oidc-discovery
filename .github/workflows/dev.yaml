@@ -96,7 +96,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
-      - name: Publish Helm chart
-        id: publish-helm-chart
+      - name: Template Helm Chart
+        id: template-helm-chart
         run: |
           helm template charts/rke2-oidc-discovery
