@@ -23,13 +23,6 @@ jobs:
       id: get_tag
       run: echo "TAG_NAME=${GITHUB_REF##*/}" >> "$GITHUB_ENV"
 
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ env.TAG_NAME }}
-        name: Release ${{ env.TAG_NAME }}
-        generate_release_notes: true
-
     - name: 'Login to GitHub Container Registry'
       uses: docker/login-action@v3
       with:
@@ -41,6 +34,13 @@ jobs:
       run: |
         docker build . --tag $IMAGE_NAME:${{ env.TAG_NAME }}
         docker push $IMAGE_NAME:${{ env.TAG_NAME }}
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.TAG_NAME }}
+        name: Release ${{ env.TAG_NAME }}
+        generate_release_notes: true
 
   helm-publish:
     runs-on: ubuntu-latest
