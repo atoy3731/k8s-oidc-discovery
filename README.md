@@ -1,8 +1,8 @@
-# RKE2 OIDC Discovery Tool
+# K8s OIDC Discovery Tool
 
-![Build](https://github.com/atoy3731/rke2-oidc-discovery/actions/workflows/dev.yaml/badge.svg)
+![Build](https://github.com/atoy3731/k8s-oidc-discovery/actions/workflows/dev.yaml/badge.svg)
 
-I put this together to provide a "proxy" to the two necessary endpoints for OIDC configuration with Rancher's RKE2 (although it should work with most K8s distros). This tool:
+I put this together to provide a "proxy" to the two necessary endpoints for OIDC configuration with Kubernetes. This tool:
 
 * Enables you to expose OIDC endpoints (`/.well-known/openid-configuration` and `/openid/v1/jwks`) without having to enable anonymous authentication nor expose your Kubernetes API directly to the outside world.
 * Securely calls the Kubernetes API service with certificate validation and serviceAccount authentication within Kubernetes.
@@ -10,13 +10,13 @@ I put this together to provide a "proxy" to the two necessary endpoints for OIDC
 
 ## Installation
 
-You can install this tool using [Helm](https://helm.sh/docs/intro/install/). Check out the [chart README](./charts/rke2-oidc-discovery/README.md) and [values.yaml](./charts/rke2-oidc-discovery/values.yaml) for further details.
+You can install this tool using [Helm](https://helm.sh/docs/intro/install/). Check out the [chart README](./charts/k8s-oidc-discovery/README.md) and [values.yaml](./charts/k8s-oidc-discovery/values.yaml) for further details.
 
 ### Ingress/Cert-Manager TLS Example (No Pod-Level TLS)
 
 ```bash
 # No custom values necessary. Install
-helm install -n oidc-discovery --create-namespace oidc-discovery oci://ghcr.io/atoy3731/charts/rke2-oidc-discovery
+helm install -n oidc-discovery --create-namespace oidc-discovery oci://ghcr.io/atoy3731/charts/k8s-oidc-discovery
 ```
 
 ### Pod-Level TLS Enabled Example 
@@ -39,7 +39,7 @@ config:
 EOT
 
 # Install with values
-helm install -n oidc-discovery -f /tmp/values.yaml --create-namespace oidc-discovery oci://ghcr.io/atoy3731/charts/rke2-oidc-discovery
+helm install -n oidc-discovery -f /tmp/values.yaml --create-namespace oidc-discovery oci://ghcr.io/atoy3731/charts/k8s-oidc-discovery
 ```
 
 ## TLS Options
@@ -65,5 +65,5 @@ Components:
 * **Cert Manager**: Creates self-signed certificate for OIDC endpoints.
 * **Istio**: Provides secure ingress point for OIDC endpoints exposed by this service.
 * **EKS IAM Webhook**: Operator for managing STS assumed roles at the pod level
-* **RKE2 OIDC Discovery**: This tool itself
+* **K8s OIDC Discovery**: This tool itself
 * **Demo-App**: Demo app to showcase what is going on. **NOTE**: Check out the [terraform](./fleet/demo-app/terraform) directory for an example on how to get our OIDC provider and roles configured.
