@@ -114,6 +114,9 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
+      - name: Authenticate to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
+
       - name: Publish Helm chart
         id: publish-helm-chart
         run: |
