@@ -7,12 +7,18 @@ on:
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}
+  GOSEC_VERSION: v2.22.5
+  GOLANGCI_LINT_VERSION: v2.3.0
+  STATICCHECK_VERSION: 2025.1
 
 jobs:
   go-test:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
@@ -29,12 +35,18 @@ jobs:
 
     - name: Install linters and tools
       run: |
-        mkdir -p ~/go/bin
+        mkdir -p $HOME/go/bin
         echo "$HOME/go/bin" >> $GITHUB_PATH
+        export GOBIN=$HOME/go/bin
 
-        command -v gosec >/dev/null || go install github.com/securego/gosec/v2/cmd/gosec@latest
-        command -v staticcheck >/dev/null || go install honnef.co/go/tools/cmd/staticcheck@latest
-        command -v golangci-lint >/dev/null || go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+        command -v gosec >/dev/null || \
+          go install github.com/securego/gosec/v2/cmd/gosec@${GOSEC_VERSION}
+
+        command -v staticcheck >/dev/null || \
+          go install honnef.co/go/tools/cmd/staticcheck@${STATICCHECK_VERSION}
+
+        command -v golangci-lint >/dev/null || \
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@${GOLANGCI_LINT_VERSION}
 
     - name: Run go vet
       run: go vet ./...
@@ -47,6 +59,7 @@ jobs:
 
     - name: Run golangci-lint
       run: golangci-lint run --timeout=5m
+
 
 
   docker-push:
