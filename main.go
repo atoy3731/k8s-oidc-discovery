@@ -103,7 +103,7 @@ func getAuthToken() {
 
 func getOidcConfiguration() string {
 	// Make request
-	url := "https://kubernetes.default.svc.cluster.local/.well-known/openid-configuration"
+	url := fmt.Sprintf("https://%s/.well-known/openid-configurations", config.apiService)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", authToken))
 
