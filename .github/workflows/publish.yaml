@@ -14,6 +14,8 @@ env:
 jobs:
   go-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
     - name: Checkout
@@ -59,8 +61,6 @@ jobs:
 
     - name: Run golangci-lint
       run: golangci-lint run --timeout=5m
-
-
 
   docker-push:
     runs-on: ubuntu-latest
