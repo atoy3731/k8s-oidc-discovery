@@ -1,15 +1,9 @@
 FROM cgr.dev/chainguard/go AS build
 
-COPY . /oidc-discovery
-
 WORKDIR /oidc-discovery
+COPY . .
 
-ENV GOOS=linux
-ENV CGO_ENABLED=0
-
-RUN go get -d -v ./...
-
-RUN go build -v -o oidc-discovery .
+RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o oidc-discovery .
 
 FROM cgr.dev/chainguard/glibc-dynamic
 
