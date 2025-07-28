@@ -138,6 +138,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Print repo info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "GITHUB_TOKEN=$GITHUB_TOKEN"
+          echo "GITHUB_TOKEN=${{ github.token }}"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
