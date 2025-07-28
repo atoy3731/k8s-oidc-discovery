@@ -98,8 +98,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Configure Git
         run: |
@@ -127,11 +125,10 @@ jobs:
     needs: helm-publish
     permissions:
       contents: write
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Create Release
         id: create_release
